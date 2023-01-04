@@ -8,17 +8,17 @@ Zad 1
 7.SELECT * FROM customers ORDER BY country DESC;
 8.SELECT * FROM cusmoters ORDER BY country DESC, customer_name ASC;
 
-zad 2 
+zad 2 SELECT MAX(price) FROM products WHERE category_id="1" OR category_id="2";
 1.SELECT MIN(price) FROM products;
 2.SELECT MAX(price) FROM products;
 3.SELECT COUNT(unit) FROM products;
 4.SELECT COUNT(customer_name), country FROM customer GROUP BY country;
 5.SELECT COUNT(*),country FROM customer GROUP BY country;
-6.SELECT COUNT(name),AVG(price) FROM products WHER category_id="1";
+6.SELECT COUNT(name),AVG(price) FROM products WHERE category_id="1";
 7.SELECT SUM(price) FROM products WHERE category_id="2";
-8.SELECT MAX(price) FROM prodcurts WHER category_id="1" OR category_id="2";
+8.SELECT MAX(price) FROM prodcurts WHERE category_id="1" OR category_id="2";
 
-Zad 3 
+Zad 3 S
 1.SELECT * FROM products WHERE price BETWEEN 10 AND 20;
 2.SELECT * FROM products WHERE prcie NOT BETWEEN 10 AND 20;
 3.SELECT * FROM products WHERE category_id IN (1,2,3);
@@ -28,4 +28,25 @@ Zad 3
 7.SELECT * FROM products WHERE customer_id IN (SELECT customer_id FROM orders WHERE customers_id BETWEEN 77 AND 90);
  
 Zad 4
-1.SELECT * FROM customers JOIN orders ON orders.customers_id=customers.id
+1.SELECT customer_name , o.id FROM customers C LEFT JOIN orders o ON o.customer_id =c.id;
+2.SELECT o.customer_id , COUNT(o.id) FROM customers C LEFT JOIN orders o ON o.customer_id =c.id;
+3.SELECT o.customer_id , o.id FROM customers C INNER JOIN orders o ON o.customer_id =c.id;
+4.SELECT customer_name , o.id FROM customers C RIGHT JOIN orders o ON o.customer_id =c.id;
+SELECT c1.customer_name AS Customer 1 name,c2.customer_name AS Customer 2 name, c1.city AS City FROM customers c1, customers c2 WHERE c1.id <> c2.id AND c1.City = c2.City;
+
+Zad 5
+1.SELECT id , customer_id , employee_id , order_date, shipper_id FROM orders ORDER BY id DESC LIMIT 10;
+2.SELECT id, customer_id, employee_id, order_date, shipper_id FROM orders LIMIT 10 OFFSET 10;
+
+Zad 6 
+1.SELECT COUNT(id), country FROM customers GROUP BY country HAVING COUNT(id) > 5;
+2.SELECT c.customer_name, COUNT(c.id) FROM customers AS c JOIN orders AS o ON o.customer_id = c.id GROUP By c.id HAVING COUNT(c.id) > 2 and COUNT(c.id) < 4;
+3.SELECT e.first_name, e.last_name, COUNT(o.id) FROM employees AS e JOIN orders as o ON o.employee_id = e.id GROUP By e.id HAVING COUNT(o.id) > 10;
+4.SELECT e.last_name, EXISTS(SELECT COUNT(o.id) FROM orders AS o WHERE o.employee_id = e.id HAVING COUNT(o.id)) FROM employees as e WHERE e.last_name="Davolio" OR e.last_name="Fuller";
+5.SELECT id, name, contact_name, address, city, post_code, country, phone FROM suppliers AS s WHERE EXISTS( SELECT p.id FROM products AS p WHERE p.price < 20 AND p.supplier_id = s.id );
+
+Zad 7 
+1.SELECT p.name FROM products AS p JOIN orders_details AS o ON p.id = o.product_id WHERE o.id = ANY(SELECT o.id FROM orders_details AS o WHERE o.quantity = 10);
+2.SELECT p.name FROM products AS p JOIN orders_details AS o ON p.id = o.product_id WHERE o.id = ANY(SELECT o.id FROM orders_details as o WHERE o.quantity > 99);
+3.SELECT * FROM products AS p WHERE p.id = ALL(SELECT p.id FROM products AS p WHERE p.name);
+4.SELECT p.name FROM products AS p JOIN orders_details AS o ON p.id = o.product_id WHERE o.id = ALL(SELECT o.id FROM orders_details AS o WHERE o.quantity = 10);
